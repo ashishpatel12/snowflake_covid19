@@ -1,13 +1,15 @@
 //COVID 19 Queries STARSCHEMA_COVID19
+//Global Cases Total
+select sum(total_cases) from PUBLIC.WHO_SITUATION_REPORTS where date=(select max(DATE)from PUBLIC.WHO_SITUATION_REPORTS);
 
-//Confirmed Cases
-select sum(cases) from PUBLIC.JHU_COVID_19 where date=(select max(DATE) from PUBLIC.JHU_COVID_19) and case_type='Confirmed';
+//Global Cases (New)
+select sum(cases_new) from PUBLIC.WHO_SITUATION_REPORTS where date=(select max(DATE)from PUBLIC.WHO_SITUATION_REPORTS)
 
-//New Cases World Health Organization
-select sum(cases_new) from PUBLIC.WHO_SITUATION_REPORTS;
+//Global Deaths 
+select sum(deaths) from PUBLIC.WHO_SITUATION_REPORTS where date=(select max(DATE)from PUBLIC.WHO_SITUATION_REPORTS);
 
-//Sum Deaths John Hopkins Dataset
-select sum(cases) from PUBLIC.JHU_COVID_19 where date=(select max(DATE) from PUBLIC.JHU_COVID_19) and case_type='Deaths';
+/Global Deaths (New)
+select sum(deaths_new) from PUBLIC.WHO_SITUATION_REPORTS where date=(select max(DATE)from PUBLIC.WHO_SITUATION_REPORTS);
 
 //COVID-19 (Total Cases)
 select DATE,COUNTRY_REGION, SUM(CASES), SUM(DIFFERENCE) from "STARSCHEMA_COVID19"."PUBLIC"."JHU_COVID_19" where CASE_TYPE='Confirmed' and COUNTRY_REGION='United States' OR COUNTRY_REGION='Italy' OR COUNTRY_REGION='Spain' OR COUNTRY_REGION='Germany' OR COUNTRY_REGION='India' group by DATE,COUNTRY_REGION, COUNTRY_REGION order by DATE desc;
@@ -17,7 +19,6 @@ select * from PUBLIC.JHU_COVID_19 where COUNTRY_REGION='United States' and DATE=
 
 //Total Cases USA
 select province_state, sum(CASES) from PUBLIC.JHU_COVID_19 where COUNTRY_REGION='United States' and DATE=(select max(DATE) from PUBLIC.JHU_COVID_19) and CASE_TYPE='Confirmed' group by province_state;
-
 
 //COVID-19 Tests (%Positive)
 select PROVINCE_STATE, sum(POSITIVE)/nullif(sum(POSITIVE)+sum(NEGATIVE),0)*100 as Percent_Positive from public.ct_us_covid_tests where DATE=(select max(DATE) from PUBLIC.CT_US_COVID_TESTS) group by PROVINCE_STATE;
